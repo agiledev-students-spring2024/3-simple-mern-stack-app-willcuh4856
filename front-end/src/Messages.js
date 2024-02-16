@@ -26,6 +26,7 @@ const Messages = props => {
       .get(`${process.env.REACT_APP_SERVER_HOSTNAME}/messages`)
       .then(response => {
         // axios bundles up all response data in response.data property
+        console.log("hi")
         const messages = response.data.messages
         setMessages(messages)
       })

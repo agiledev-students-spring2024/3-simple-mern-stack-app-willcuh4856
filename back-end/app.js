@@ -7,6 +7,7 @@ const mongoose = require('mongoose')
 const app = express() // instantiate an Express object
 app.use(morgan('dev', { skip: (req, res) => process.env.NODE_ENV === 'test' })) // log all incoming requests, except when in unit test mode.  morgan has a few logging default styles - dev is a nice concise color-coded style
 app.use(cors()) // allow cross-origin resource sharing
+const router = express.Router(); // Create a router
 
 // use express's builtin body-parser middleware to parse any data included in a request
 app.use(express.json()) // decode JSON-formatted incoming POST data
@@ -22,6 +23,10 @@ mongoose
 const { Message } = require('./models/Message')
 const { User } = require('./models/User')
 
+const Personal = require('./models/Personal');
+mongoose.connect(process.env.DB_CONNECTION_STRING, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('Failed to connect to MongoDB:', err));
 // a route to handle fetching all messages
 app.get('/messages', async (req, res) => {
   // load all messages from database
@@ -39,6 +44,35 @@ app.get('/messages', async (req, res) => {
     })
   }
 })
+
+
+
+app.get('/about-us', (req, res) => {
+  // Prepare the content for the "About Us" page
+  const aboutUsContent = {
+    paragraphs: [
+      "My name is William Cui, and I grew up in Taiwan and Bay Area. I am a senior studying computer science. I really like good food especially japanese, taiwanese, and korean food. I enjoy living in NYC and trying new things.",
+      "This class has been very interesting to me with all of the homeworks and assignments. I feel like I am learning a lot through the lectures. I hope to become a better software engineer one day. ",
+      "I am really looking forward to going back to california to visit my family during spring break. It will also be cool to be able to to europe during the summer. Overall, I just really enjoy traveling because I find it cool to learn about other people's culture. "
+    ],
+    imageUrl: "https://media.licdn.com/dms/image/D4E03AQHM5ziFvxiEug/profile-displayphoto-shrink_800_800/0/1676153014571?e=2147483647&v=beta&t=ZGm9Rmdgm74p4T0frJc-ErzX8WYeN4TbCzY8i7R5OB4" // Replace this with the actual URL of your photo
+  };
+  console.log(aboutUsContent);
+  // Respond with the content as JSON
+  res.json(aboutUsContent);
+});
+
+
+
+
+
+
+
+
+
+
+
+
 
 // a route to handle fetching a single message by its id
 app.get('/messages/:messageId', async (req, res) => {
